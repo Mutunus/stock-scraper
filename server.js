@@ -34,8 +34,13 @@ app.get('/simple-growth-filter', async (req, res) => {
     res.status(200).json(stocks)
 })
 
+app.get('/current-forward-pe', async (req, res) => {
+    const stocks = await db.currentToForwardPe()
+    res.status(200).json(stocks)
+})
+
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`Server listening at http://localhost:${port}`)
 })
 
 const main = new Main();

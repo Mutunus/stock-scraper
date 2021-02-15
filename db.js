@@ -49,7 +49,11 @@ class Mongo {
     }
 
     simpleGrowthFilter() {
-        return Stocks.find({pegRatio: { $gt: 0, $lt: 1 }, profitMargin: { $gt: 0 } }).sort({ pegRatio: 1 }).lean().exec()
+        return Stocks.find({pegRatio: { $gt: 0, $lt: 1 }, profitMargin: { $gt: 0 }, revenueTtm: { $gt: 100000000 } }).sort({ pegRatio: 1 }).lean().exec()
+    }
+
+    currentToForwardPe() {
+        return Stocks.aggregate([{$match: {$and: [{ peRatio: { $gt: 0, $lt: 200 }}, {forwardPe: { $gt: 0, $lt: 10 }} ] }}, { $addFields: { ratio: { $divide: [ "$forwardPe", "$peRatio" ] } } }, { $match: { ratio: { $lt: 0.5, $gt: 0 }}}, { $sort: { ratio: 1 } }])
     }
 
 }

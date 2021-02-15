@@ -24,9 +24,11 @@ class ScrapeYahoo {
     }
 
     async getTickers() {
-        const tickers = await this.getTickersFromFile()
-        tickers.shift()
-        return this.shuffleTickers(tickers)
+        const nyse = await this.getTickersFromFile('NYSE.txt')
+        const nasdaq = await this.getTickersFromFile('NASDAQ.txt')
+        const amex = await this.getTickersFromFile('AMEX.txt')
+
+        return this.shuffleTickers([...nyse, ...nasdaq, ...amex])
     }
 
     splitTickersIntoChunks(tickers, chunkSize, maxLength) {
@@ -48,8 +50,8 @@ class ScrapeYahoo {
         return tickers;
       }
 
-    async getTickersFromFile() {
-        const fileStream = fs.createReadStream('NYSE.txt');
+    async getTickersFromFile(fileName) {
+        const fileStream = fs.createReadStream(fileName);
       
         const rl = readline.createInterface({
           input: fileStream,
@@ -62,6 +64,7 @@ class ScrapeYahoo {
             const [ticker] = line.split('\t')
             res.push(ticker)
         }
+        res.shift()
         return res
     }
 

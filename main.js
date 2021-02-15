@@ -9,7 +9,6 @@ class Main {
     }
 
     init() {
-        console.log('LEO EATS DICKS')
         this.yahooScraper.init()
         this.tasks.init()
     }
