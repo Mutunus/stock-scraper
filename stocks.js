@@ -7,6 +7,7 @@ const balanceSheetReportSchema = new mongoose.Schema({
     totalShareholderEquity: Number,
     deferredLongTermLiabilities: Number,
     cash: Number,
+    cashPerShare: Number,
     totalCurrentLiabilities: Number,
     totalNonCurrentLiabilities: Number,
     shortTermDebt: Number,
