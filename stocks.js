@@ -6,8 +6,6 @@ const balanceSheetReportSchema = new mongoose.Schema({
     totalLiabilities: Number,
     totalShareholderEquity: Number,
     deferredLongTermLiabilities: Number,
-    cash: Number,
-    cashPerShare: Number,
     totalCurrentLiabilities: Number,
     totalNonCurrentLiabilities: Number,
     shortTermDebt: Number,
@@ -78,7 +76,14 @@ const stockSchema = new mongoose.Schema({
     stockPriceDate: Date,
     stockPriceChange: Number,
     previousCloseValue: Number,
-    currentRatio: Number
+    currentRatio: Number,
+    cash: Number,
+    cashPerShare: Number,
+    // cash that's generated from normal business operations or activities
+    operatingCashFlow: Number,
+    // the amount of cash a business has after it has met its financial obligations
+    leveredCashFlow: Number
+
 })
 
 module.exports = mongoose.model('Stocks', stockSchema)

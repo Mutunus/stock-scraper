@@ -12,6 +12,7 @@ class ScrapeYahoo {
     }
 
     async init() {
+        console.log('STOCK DATA COLLECTION STARTING', new Date().toLocaleString('en-NZ'))
         this.tickers = await this.getTickers()
         const chunkedTickers = this.splitTickersIntoChunks(_.clone(this.tickers), 2, 500)
         await Promise.all(
@@ -20,7 +21,10 @@ class ScrapeYahoo {
                 this.scrapeDataFromYahoo(this.tickers)
             ]
         )
-        console.log('STOCK DATA COLLECTION COMPLETED')
+        console.log('STOCK DATA COLLECTION COMPLETED', new Date().toLocaleString('en-NZ'))
+        // wait 8 hours
+        await wait(28800000)
+        this.init()
     }
 
     async getTickers() {
@@ -199,20 +203,22 @@ class ScrapeYahoo {
                 operatingMarginRow.dispose();
     
                 const financialHighlights = await page.evaluateHandle(() => document.querySelector('[data-test=qsp-statistics] div:nth-child(3) div:nth-child(4) table'))
-    
                 const revenue = await financialHighlights.evaluate(x => x.querySelector('tr:nth-child(1) td:nth-child(2)').innerText).catch(x => null)
                 const revenuePerShareTtm = await financialHighlights.evaluate(x => x.querySelector('tr:nth-child(2) td:nth-child(2)').innerText).catch(x => null);
                 const ebitda = await financialHighlights.evaluate(x => x.querySelector('tr:nth-child(5) td:nth-child(2)').innerText).catch(x => null);
                 const quarterlyRevenueGrowthYoy = await financialHighlights.evaluate(x => x.querySelector('tr:nth-child(3) td:nth-child(2)').innerText).catch(x => null);
                 financialHighlights.dispose();
 
-    
                 const balanceSheet = await page.evaluateHandle(() => document.querySelector('[data-test=qsp-statistics] div:nth-child(3) div:nth-child(5) table'))
-
                 const cash = await balanceSheet.evaluate(x => x.querySelector('tr:nth-child(1) td:nth-child(2)').innerText).catch(x => null)
                 const cashPerShare = await balanceSheet.evaluate(x => x.querySelector('tr:nth-child(2) td:nth-child(2)').innerText).catch(x => null)
                 const currentRatio = await balanceSheet.evaluate(x => x.querySelector('tr:nth-child(5) td:nth-child(2)').innerText).catch(x => null)
- 
+                balanceSheet.dispose();
+
+                const cashFlow = await page.evaluateHandle(() => document.querySelector('[data-test=qsp-statistics] div:nth-child(3) div:nth-child(6) table'))
+                const operatingCashFlow = await cashFlow.evaluate(x => x.querySelector('tr:nth-child(1) td:nth-child(2)').innerText).catch(x => null)
+                const leveredCashFlow = await cashFlow.evaluate(x => x.querySelector('tr:nth-child(2) td:nth-child(2)').innerText).catch(x => null)
+                cashFlow.dispose();
 
                 // TODO - get cash and current ratio
     
@@ -244,6 +250,8 @@ class ScrapeYahoo {
                     priceToSalesRatioTtm: parseFloat(isNaN(priceToSalesRatioTtm) ? 0 : priceToSalesRatioTtm),
                     evToEbitda: parseFloat(isNaN(evToEbitda) ? 0 : evToEbitda),
                     revenueTtm: this.formatStatistic(revenue),
+                    operatingCashFlow: this.formatStatistic(operatingCashFlow),
+                    leveredCashFlow: this.formatStatistic(leveredCashFlow),
                     cash: this.formatStatistic(cash),
                     cashPerShare: this.parseFloat(cashPerShare),
                     currentRatio: this.parseFloat(currentRatio),

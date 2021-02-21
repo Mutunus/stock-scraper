@@ -34,8 +34,23 @@ app.get('/simple-growth-filter', async (req, res) => {
     res.status(200).json(stocks)
 })
 
+app.get('/hyper-growth', async (req, res) => {
+    const stocks = await db.hyperGrowth()
+    res.status(200).json(stocks)
+})
+
+app.get('/super-growth', async (req, res) => {
+    const stocks = await db.superGrowth()
+    res.status(200).json(stocks)
+})
+
 app.get('/current-forward-pe', async (req, res) => {
     const stocks = await db.currentToForwardPe()
+    res.status(200).json(stocks)
+})
+
+app.get('/portfolio', async (req, res) => {
+    const stocks = await db.portfolio()
     res.status(200).json(stocks)
 })
 

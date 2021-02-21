@@ -5,7 +5,6 @@ const ObjectId = require('mongodb').ObjectId
 class Mongo {
     constructor() {
         this.db = this.initDb()
-        console.log('mongo create')
     }
 
     initDb() {
@@ -33,7 +32,7 @@ class Mongo {
 
     // find 
     simplePeFilter() {
-        return Stocks.find({ $or: [{ trailingPe: { $gt: 0, $lt: 15 } }, { forwardPe: { $gt: 0, $lt: 15 } }], priceToBookRatio: { $gt: 0, $lt: 1.5 } }).sort({priceToBookRatio: 1}).lean().exec()
+        return Stocks.find({ $or: [{ trailingPe: { $gt: 0, $lt: 10 } }, { forwardPe: { $gt: 0, $lt: 10 } }], priceToBookRatio: { $gt: 0, $lt: 1.5 } }).sort({priceToBookRatio: 1}).lean().exec()
     }
 
     simpleEvToEbitaFilter() {
@@ -45,15 +44,27 @@ class Mongo {
     }
 
     simpleEvToEbitaFilterPlus() {
-        return Stocks.aggregate([{ $addFields: { ratio: { $multiply: [ "$evToEbitda", "$priceToBookRatio" ] } } }, { $match: { ratio: { $lt: 7.5, $gt: 0 }, revenueTtm: { $gt: 100000000 } } }, { $sort: { ratio: 1 } } ])
+        return Stocks.aggregate([{ $addFields: { ratio: { $multiply: [ "$evToEbitda", "$priceToBookRatio" ] } } }, { $match: { ratio: { $lt: 7.5, $gt: 0 }, revenueTtm: { $gt: 100000000 }, peRatio: { $lt: 10 } } }, { $sort: { ratio: 1 } } ])
     }
 
     simpleGrowthFilter() {
         return Stocks.find({pegRatio: { $gt: 0, $lt: 1 }, profitMargin: { $gt: 0 }, revenueTtm: { $gt: 100000000 } }).sort({ pegRatio: 1 }).lean().exec()
     }
 
+    hyperGrowth() {
+        return Stocks.aggregate([{ $match: { profitMargin: { $gt: 20 }, quarterlyRevenueGrowthYoy: { $gt: 20 }, currentRatio: { $gt: 1 }, forwardPe: { $lt: 50, $gt: 0 } }}, { $sort: { quarterlyRevenueGrowthYoy: -1 } }])
+    }
+
+    superGrowth() {
+        return Stocks.aggregate([{$match: {$and: [{ peRatio: { $gt: 0, $lt: 200 }}, {forwardPe: { $gt: 0, $lt: 50 }} ] }}, { $match: { profitMargin: { $gt: 20 }, quarterlyRevenueGrowthYoy: { $gt: 20 }, currentRatio: { $gt: 1 } }}, { $sort: { quarterlyRevenueGrowthYoy: -1 } }])
+    }
+
     currentToForwardPe() {
         return Stocks.aggregate([{$match: {$and: [{ peRatio: { $gt: 0, $lt: 200 }}, {forwardPe: { $gt: 0, $lt: 10 }} ] }}, { $addFields: { ratio: { $divide: [ "$forwardPe", "$peRatio" ] } } }, { $match: { ratio: { $lt: 0.5, $gt: 0 }}}, { $sort: { ratio: 1 } }])
+    }
+
+    portfolio() {
+        return Stocks.find({ticker: { $in: ['TTCF'] }}).lean().exec()
     }
 
 }
