@@ -9,6 +9,12 @@ app.get('/ping', async (req, res) => {
     res.status(200).send('pong')
 })
 
+app.get('/count', async (req, res) => {
+    const totalNumOfDocs = await db.count()
+    console.log(totalNumOfDocs)
+    res.status(200).json(totalNumOfDocs)
+})
+
 app.get('/pe-filter', async (req, res) => {
     const stocks = await db.simplePeFilter()
     res.status(200).json(stocks)

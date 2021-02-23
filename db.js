@@ -29,8 +29,11 @@ class Mongo {
     getStocksOlderThanDate(date) {
         return Stocks.find({ "lastUpdated": { "$lte": date } }).lean().exec()
     }
+    
+    count() {
+        return Stocks.countDocuments({})
+    }
 
-    // find 
     simplePeFilter() {
         return Stocks.find({ $or: [{ trailingPe: { $gt: 0, $lt: 10 } }, { forwardPe: { $gt: 0, $lt: 10 } }], priceToBookRatio: { $gt: 0, $lt: 1.5 } }).sort({priceToBookRatio: 1}).lean().exec()
     }
