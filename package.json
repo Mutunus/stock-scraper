@@ -20,5 +20,6 @@
     "puppeteer": "^5.2.1",
     "stocks.js": "0.0.17",
     "yahoo-finance": "^0.3.6"
-  }
+  },
+  "devDependencies": {}
 }

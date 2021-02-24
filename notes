@@ -2,3 +2,11 @@ ticker csv
 https://eoddata.com/symbols.aspx?AspxAutoDetectCookieSupport=1
 
 http://165.232.144.178:3000
+
+Docker
+
+build image
+docker build -t IMAGE_NAME .
+
+create container from image
+docker run -p 3000:3000 --name CONTAINER_NAME IMAGE_NAME

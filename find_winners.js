@@ -5,6 +5,7 @@ const readline = require('readline');
 const _ = require('lodash')
 const { wait } = require('./utils')
 const puppeteer = require('puppeteer');
+const path = require('path');
 
 class ScrapeYahoo {
     constructor(db) {
@@ -55,7 +56,9 @@ class ScrapeYahoo {
       }
 
     async getTickersFromFile(fileName) {
-        const fileStream = fs.createReadStream(fileName);
+        const filePath = path.resolve(`./${fileName}`)
+        console.log('filePath', filePath)
+        const fileStream = fs.createReadStream(filePath);
       
         const rl = readline.createInterface({
           input: fileStream,
