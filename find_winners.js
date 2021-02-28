@@ -57,7 +57,6 @@ class ScrapeYahoo {
 
     async getTickersFromFile(fileName) {
         const filePath = path.resolve(`./${fileName}`)
-        console.log('filePath', filePath)
         const fileStream = fs.createReadStream(filePath);
       
         const rl = readline.createInterface({

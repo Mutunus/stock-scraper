@@ -1,4 +1,4 @@
-FROM node:10
+FROM buildkite/puppeteer:latest
 
 EXPOSE 3000
 

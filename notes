@@ -5,8 +5,32 @@ http://165.232.144.178:3000
 
 Docker
 
+installing on new ubuntu
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+sudo apt update
+sudo apt install docker-ce
+
+puppeteer dependencies
+ldd chrome | grep not
+
+sudo apt-get install -y libnss3-tools
+sudo apt-get install -y libnss3
+sudo apt-get install -y libxss1
+apt-get install -y libasound2
+apt-get install -y libatk-bridge2.0-0
+apt install -y libgtk-3-0
+sudo apt-get install -y libgbm-dev
+
 build image
 docker build -t IMAGE_NAME .
+docker build -t scrape-image .
 
 create container from image
 docker run -p 3000:3000 --name CONTAINER_NAME IMAGE_NAME
+docker run -p 3000:3000 --name stock-scraper scrape-image
+
+ssh to deployment
+ssh root@165.232.147.84

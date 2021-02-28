@@ -55,11 +55,11 @@ class Mongo {
     }
 
     hyperGrowth() {
-        return Stocks.aggregate([{ $match: { profitMargin: { $gt: 20 }, quarterlyRevenueGrowthYoy: { $gt: 20 }, currentRatio: { $gt: 1 }, forwardPe: { $lt: 50, $gt: 0 } }}, { $sort: { quarterlyRevenueGrowthYoy: -1 } }])
+        return Stocks.aggregate([{ $match: { profitMargin: { $gt: 20 }, quarterlyRevenueGrowthYoy: { $gt: 20 }, currentRatio: { $gt: 1 }, forwardPe: { $lt: 100, $gt: 0 } }}, { $sort: { quarterlyRevenueGrowthYoy: -1 } }])
     }
 
     superGrowth() {
-        return Stocks.aggregate([{$match: {$and: [{ peRatio: { $gt: 0, $lt: 200 }}, {forwardPe: { $gt: 0, $lt: 50 }} ] }}, { $match: { profitMargin: { $gt: 20 }, quarterlyRevenueGrowthYoy: { $gt: 20 }, currentRatio: { $gt: 1 } }}, { $sort: { quarterlyRevenueGrowthYoy: -1 } }])
+        return Stocks.aggregate([{$match: {$and: [{ peRatio: { $gt: 0, $lt: 200 }}, {forwardPe: { $gt: 0, $lt: 100 }} ] }}, { $match: { profitMargin: { $gt: 20 }, quarterlyRevenueGrowthYoy: { $gt: 20 }, currentRatio: { $gt: 1 } }}, { $sort: { quarterlyRevenueGrowthYoy: -1 } }])
     }
 
     currentToForwardPe() {

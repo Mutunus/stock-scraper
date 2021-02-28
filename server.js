@@ -11,7 +11,6 @@ app.get('/ping', async (req, res) => {
 
 app.get('/count', async (req, res) => {
     const totalNumOfDocs = await db.count()
-    console.log(totalNumOfDocs)
     res.status(200).json(totalNumOfDocs)
 })
 
