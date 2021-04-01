@@ -32,8 +32,9 @@ class ScrapeYahoo {
         const nyse = await this.getTickersFromFile('NYSE.txt')
         const nasdaq = await this.getTickersFromFile('NASDAQ.txt')
         const amex = await this.getTickersFromFile('AMEX.txt')
+        const otc = await this.loadOtcTickers()
 
-        return this.shuffleTickers([...nyse, ...nasdaq, ...amex])
+        return this.shuffleTickers([...nyse, ...nasdaq, ...amex, ...otc])
     }
 
     splitTickersIntoChunks(tickers, chunkSize, maxLength) {
@@ -58,19 +59,35 @@ class ScrapeYahoo {
     async getTickersFromFile(fileName) {
         const filePath = path.resolve(`./${fileName}`)
         const fileStream = fs.createReadStream(filePath);
-      
         const rl = readline.createInterface({
           input: fileStream,
           crlfDelay: Infinity
         });
-      
-        let res = []
+        const res = []
 
         for await (const line of rl) {
             const [ticker] = line.split('\t')
             res.push(ticker)
         }
         res.shift()
+        return res
+    }
+
+    async loadOtcTickers() {
+        const filePath = path.resolve(`./otc_markets.csv`)
+        const fileStream = fs.createReadStream(filePath); 
+        const rl = readline.createInterface({
+            input: fileStream,
+            crlfDelay: Infinity
+          });
+        const res = []
+
+        for await (const line of rl) {
+            const [ticker] = line.split(',')
+            res.push(ticker)
+        }
+        res.shift()
+        console.log(res[0])
         return res
     }
 
