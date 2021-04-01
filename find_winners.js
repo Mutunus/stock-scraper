@@ -56,13 +56,17 @@ class ScrapeYahoo {
         return tickers;
       }
 
-    async getTickersFromFile(fileName) {
+      createReadStream(fileName) {
         const filePath = path.resolve(`./${fileName}`)
         const fileStream = fs.createReadStream(filePath);
-        const rl = readline.createInterface({
+        return readline.createInterface({
           input: fileStream,
           crlfDelay: Infinity
         });
+      }
+
+    async getTickersFromFile(fileName) {
+        const rl = this.createReadStream(fileName)
         const res = []
 
         for await (const line of rl) {
@@ -74,12 +78,7 @@ class ScrapeYahoo {
     }
 
     async loadOtcTickers() {
-        const filePath = path.resolve(`./otc_markets.csv`)
-        const fileStream = fs.createReadStream(filePath); 
-        const rl = readline.createInterface({
-            input: fileStream,
-            crlfDelay: Infinity
-          });
+        const rl = this.createReadStream('./otc_markets.csv')
         const res = []
 
         for await (const line of rl) {
@@ -87,7 +86,6 @@ class ScrapeYahoo {
             res.push(ticker)
         }
         res.shift()
-        console.log(res[0])
         return res
     }
 
