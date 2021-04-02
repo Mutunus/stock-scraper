@@ -54,6 +54,11 @@ app.get('/current-forward-pe', async (req, res) => {
     res.status(200).json(stocks)
 })
 
+app.get('/micro-cap-growth', async (req, res) => {
+    const stocks = await db.microCapGrowth()
+    res.status(200).json(stocks)
+})
+
 app.get('/portfolio', async (req, res) => {
     const stocks = await db.portfolio()
     res.status(200).json(stocks)

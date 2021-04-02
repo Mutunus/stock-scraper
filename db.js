@@ -62,6 +62,10 @@ class Mongo {
         return Stocks.aggregate([{$match: {$and: [{ peRatio: { $gt: 0, $lt: 200 }}, {forwardPe: { $gt: 0, $lt: 100 }} ] }}, { $match: { profitMargin: { $gt: 20 }, quarterlyRevenueGrowthYoy: { $gt: 20 }, currentRatio: { $gt: 1 } }}, { $sort: { quarterlyRevenueGrowthYoy: -1 } }])
     }
 
+    microCapGrowth() {
+        return Stocks.aggregate([{ $match: { profitMargin: { $gt: 20 }, quarterlyRevenueGrowthYoy: { $gt: 20 }, revenueTtm: { $lt: 1000000000 } } }, { $sort: { quarterlyRevenueGrowthYoy: -1 } }])
+    }
+
     currentToForwardPe() {
         return Stocks.aggregate([{$match: {$and: [{ peRatio: { $gt: 0, $lt: 200 }}, {forwardPe: { $gt: 0, $lt: 10 }} ] }}, { $addFields: { ratio: { $divide: [ "$forwardPe", "$peRatio" ] } } }, { $match: { ratio: { $lt: 0.5, $gt: 0 }}}, { $sort: { ratio: 1 } }])
     }
