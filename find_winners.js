@@ -285,7 +285,7 @@ class ScrapeYahoo {
                 this.db.upsertStock(stockPriceData)
         
                 // wait random amount of time to make it look less obvious i am a bot
-                const waitTime = _.random(500, 5000)
+                const waitTime = _.random(250, 500)
                 await wait(waitTime)
             }
             catch(e) {
@@ -313,7 +313,8 @@ class ScrapeYahoo {
     }
 
     parsePercentage(percentage) {
-        const float = parseFloat(percentage)
+        const formatted = percentage.replace('%', '').replace(',', '');
+        const float = parseFloat(formatted)
         return isNaN(float) ? 0 : float
     }
 
