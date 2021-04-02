@@ -226,6 +226,11 @@ class ScrapeYahoo {
                 const quarterlyRevenueGrowthYoy = await financialHighlights.evaluate(x => x.querySelector('tr:nth-child(3) td:nth-child(2)').innerText).catch(x => null);
                 financialHighlights.dispose();
 
+                const managementEffectiveness = await page.evaluateHandle(() => document.querySelector('[data-test=qsp-statistics] > :nth-child(2n) > :nth-child(3n) div > :nth-child(3n)'));
+                const returnOnAssets = await managementEffectiveness.evaluate(x => x.querySelector('tr:nth-child(1) td:nth-child(2)').innerText).catch(x => null)
+                const returnOnEquity = await managementEffectiveness.evaluate(x => x.querySelector('tr:nth-child(2) td:nth-child(2)').innerText).catch(x => null)
+                managementEffectiveness.dispose();
+
                 const balanceSheet = await page.evaluateHandle(() => document.querySelector('[data-test=qsp-statistics] div:nth-child(3) div:nth-child(5) table'))
                 const cash = await balanceSheet.evaluate(x => x.querySelector('tr:nth-child(1) td:nth-child(2)').innerText).catch(x => null)
                 const cashPerShare = await balanceSheet.evaluate(x => x.querySelector('tr:nth-child(2) td:nth-child(2)').innerText).catch(x => null)
@@ -280,7 +285,9 @@ class ScrapeYahoo {
                     stockPrice,
                     stockPriceChange: _.round(((stockPrice - parsedPreviousCloseValue) / stockPrice) * 100, 2),
                     previousCloseValue: parsedPreviousCloseValue,
-                    stockPriceDate: new Date()
+                    stockPriceDate: new Date(),
+                    returnOnAssets: this.parsePercentage(returnOnAssets),
+                    returnOnEquity: this.parsePercentage(returnOnEquity)
                 }
                 this.db.upsertStock(stockPriceData)
         

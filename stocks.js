@@ -65,6 +65,8 @@ const stockSchema = new mongoose.Schema({
     revenuePerShareTtm: Number,
     ebitda: Number,
     evToEbitda: Number,
+    returnOnAssets: Number,
+    returnOnEquity: Number,
 
 
     // alpha vantage balance sheet
